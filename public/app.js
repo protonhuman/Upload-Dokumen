@@ -364,11 +364,6 @@ function executeClientUpload(fileState, uploadUrl) {
       resolve({ success: false, name: fileState.file.name });
     };
 
-    // Set MIME type
-    if (fileState.file.type) {
-      xhr.setRequestHeader('Content-Type', fileState.file.type);
-    }
-    
     xhr.send(fileState.file);
   });
 }
