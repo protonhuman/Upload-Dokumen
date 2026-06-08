@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portal Web Aplikasi Upload Google Drive Terpusat untuk Team Leader.">
+  <title>Centralized Team Leader Drive Uploader</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background decorative glows -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <div class="container">
+    <header class="app-header">
+      <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+      </div>
+      <h1>LeaderDrive Uploader</h1>
+      <p class="subtitle">Portal Unggah Laporan & Dokumentasi Terpusat Team Leader</p>
+    </header>
+
+    <main class="app-card">
+      <form id="uploadForm">
+        <!-- Input Group: Team Leader & Date -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="teamLeader">Nama Team Leader</label>
+            <div class="select-wrapper">
+              <select id="teamLeader" required>
+                <option value="" disabled selected>Pilih Team Leader...</option>
+                <option value="Arief Rakhman">Arief Rakhman</option>
+                <option value="Erfan Huzain">Erfan Huzain</option>
+                <option value="Junaidi">Junaidi</option>
+                <option value="Sigit Sudirman">Sigit Sudirman</option>
+                <option value="Dedy Rahman">Dedy Rahman</option>
+                <option value="Eka Yudi P">Eka Yudi P</option>
+                <option value="Ariyadi">Ariyadi</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="operationalDate">Tanggal Operasional</label>
+            <input type="date" id="operationalDate" required>
+          </div>
+        </div>
+
+        <!-- Input Group: Shift -->
+        <div class="form-group">
+          <label>Pilihan Shift</label>
+          <div class="shift-selector">
+            <label class="shift-chip">
+              <input type="radio" name="shift" value="Shift 1" required>
+              <span class="chip-content">
+                <span class="shift-title">Shift 1</span>
+              </span>
+            </label>
+            <label class="shift-chip">
+              <input type="radio" name="shift" value="Shift 2" required>
+              <span class="chip-content">
+                <span class="shift-title">Shift 2</span>
+              </span>
+            </label>
+            <label class="shift-chip">
+              <input type="radio" name="shift" value="Shift 3" required>
+              <span class="chip-content">
+                <span class="shift-title">Shift 3</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Drag & Drop Uploader -->
+        <div class="form-group">
+          <label>Unggah Berkas</label>
+          <div id="dropZone" class="drop-zone">
+            <input type="file" id="fileInput" multiple style="display: none;">
+            <div class="drop-zone-content">
+              <div class="upload-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </div>
+              <h3>Tarik & Lepaskan berkas di sini</h3>
+              <p>atau <span class="browse-link">Telusuri File</span></p>
+              <span class="file-limits">Mendukung banyak file sekaligus</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Selected Files List -->
+        <div id="filesContainer" class="files-container" style="display: none;">
+          <h4>Berkas Terpilih (<span id="fileCount">0</span>)</h4>
+          <div id="fileList" class="file-list"></div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="submitBtn" class="submit-btn" disabled>
+          <span class="btn-text">Kirim & Unggah ke Drive</span>
+          <span class="spinner" style="display: none;"></span>
+        </button>
+      </form>
+    </main>
+
+    <!-- Success Modal Overlay -->
+    <div id="successModal" class="modal-overlay" style="display: none;">
+      <div class="modal-card">
+        <div class="success-checkmark">
+          <div class="check-icon">
+            <span class="icon-line line-tip"></span>
+            <span class="icon-line line-long"></span>
+            <div class="icon-circle"></div>
+            <div class="icon-fix"></div>
+          </div>
+        </div>
+        <h2>Unggah Berhasil!</h2>
+        <p id="successMessage">Laporan operasional Anda telah berhasil tersimpan di Google Drive.</p>
+        <button id="closeModalBtn" class="modal-btn">Selesai</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Javascript -->
+  <script src="app.js"></script>
+</body>
+</html>

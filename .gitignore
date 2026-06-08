@@ -1,0 +1,11 @@
+node_modules/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Google Service Account Credentials
+upload-dokumentasi-95a4ba97462e.json
+service-account.json
+credentials.json
